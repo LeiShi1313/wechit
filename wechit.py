@@ -16,7 +16,7 @@ IS_PYTHON3 = sys.version_info > (3, 0)        # supports python 2 and 3
 
 LOGIN_SCREEN_FILE = "./temp/login-screen.png" # temp file for qr code
 MSG_IMG_FILE = "./temp/msg-img.png"           # temp file for in-chat images
-IS_RETINA = True                              # mac with a retina display?
+IS_RETINA = False                              # mac with a retina display?
 
 # terminal window dimensions
 TERM_ROWS = 24
@@ -197,7 +197,7 @@ def print_thumbnail(im,width=64):
 
 # get bounding box of html element on screen
 def get_rect(elem):
-    s = 1+IS_RETINA
+    s = 1 + IS_RETINA
     rect = elem.location['x']*s, elem.location['y']*s, (elem.location['x']+elem.size['width'])*s, (elem.location['y']+elem.size['height'])*s
     return rect
 
@@ -210,6 +210,7 @@ def get_qr_code(driver):
     qrelem = driver.find_element_by_class_name("qrcode").find_element_by_class_name("img")
 
     rect = get_rect(qrelem)
+    print(rect)
 
     while len(glob(LOGIN_SCREEN_FILE)) == 0:
         time.sleep(0.5)
@@ -286,7 +287,7 @@ def send_enter(elem):
 # get my own username
 def get_username(driver):
     return render_unicode(no_emoji(
-        driver.find_element_by_class_name("give_me").find_element_by_class_name("display_name").get_attribute("innerHTML")
+        driver.find_element_by_class_name("panel").find_element_by_class_name("display_name").get_attribute("innerHTML")
         ))
 
 # get a list of recent conversation partners
@@ -433,7 +434,7 @@ def main():
     print("initializing driver...")
     driver = init_driver()
 
-    time.sleep(1)
+    time.sleep(3)
     im = get_qr_code(driver)
 
     get_term_shape()
